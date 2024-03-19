@@ -11,6 +11,8 @@ quadra = 0
 
 
 for jogada in dados:
+    score =  np.unique(jogada, return_counts=True)[1]
+    print(score) 
     if 4 in np.unique(jogada, return_counts=True)[1]:
         quadra += 1
 
