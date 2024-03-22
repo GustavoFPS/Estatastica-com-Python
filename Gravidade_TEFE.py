@@ -5,7 +5,7 @@ import sys
 pos=[0.41, 0.68,1.41, 2.41, 3.79, 5.44, 7.47]
 posicao = []
 for element in pos:
-  posicao.append(element*100)
+    posicao.append(element*100)
 
 tempo = [0.014, 0.1979,0.3854,0.5729,0.7604,0.9479,1.1354]
 
