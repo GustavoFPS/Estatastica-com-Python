@@ -1,0 +1,129 @@
+\section{Introdução}
+
+O Método dos Mínimos Quadrados (MMQ) é a principal técnica estudada durante a disciplina para encontrar o melhor ajuste para um conjunto de dados experimentais. No entanto, até o presente momento da disciplinas, haviamos limitado sua aplicação a funções cujos parâmetros não ajustados não haviam incertezas para serem consideradas. 
+
+O presente trabalho propõe a aplicação do método de ajuste para funções cujos parâmetros fixos possuem incertezas, e verificar sua influência na determinação dos parâmetros ajustados. Para tanto, a abordagem consistiu de usar a fórmula de propação habitual, utilizando as derivadas numéricas das grandezas ajustadas em relação aos parâmetros fixos (metodologia A) e comparar com os resultados obtidos pelo método de Monte Carlo (metodologia B) e de determinação de um desvio padrão efetivo da função (metodologia C).
+
+\section{Modelo de contagem radioativa}
+
+Visando estudar esse cenário, usaremos a função modelo de contagem radioativa, confome expressa na equação \eqref{eq:cont}. 
+
+\begin{equation}
+    y(\vec{x}, \vec{N}, \vec{\lambda}) = N_{\text{a}} \exp(-\lambda_{\text{a}} t_i)*\left[ 1 - \exp(-\lambda_{\text{a}}\Delta t_i) \right] + N_{\text{b}} \exp(-\lambda_{\text{b}} t_i)*\left[ 1 - \exp(-\lambda_{\text{b}}\Delta t_i) \right]
+    \label{eq:cont}
+\end{equation}
+
+Onde $\vec{N} = (N_{\text{a}},N_{\text{b}})$ são as contagens iniciais, $\vec{\lambda} = (\lambda_{\text{a}}, \lambda_{\text{b}})$ são as constantes de decaimento, $\vec{x} = (t_i, \Delta t_i)$, sendo $t_i$ o tempo e $\Delta t_i$ o intervalo de tempo que durou a contagem.
+
+\section{Procedimento}
+
+Os dados disponiveis consiste de um conjunto com 5 pontos $\{ (t, \Delta t, y, \sigma_y) \}$, onde $y$ é a contagem e $\sigma_y$ é o erro associado a contagem. Os parâmetros fixos são $\lambda_{\text{a}} = 0.203(9)\text{ h}^{-1}$ e $\lambda_{\text{b}} = 0.920(18)\text{ h}^{-1}$.
+
+O procedimento de ajuste foi realizado em etapas. Primeiramente, foi feito o ajuste dos parâmetros $N_{\text{a}}$ e $N_{\text{b}}$ sem considerar as incertezas dos parâmetros fixos, determinando um $\hat{N}_{\text{a}}$ e $\hat{N}_{\text{b}}$, e uma matriz de covariância $V_{\text{MMQ}}$. Somos capazes de propagar a incerteza dos parâmetros fixos para os parâmetros ajustados, utilizando a fórmula de propagação de incertezas, conforme a equação \eqref{eq:prop}.
+
+\begin{equation}
+    V_{\text{total}} = V_{\text{MMQ}} +  F V_{\vec{\lambda}} F^T
+    \label{eq:prop}
+\end{equation}
+
+Onde $V_{\text{total}}$ é a matriz de covariância total, $V_{\vec{\lambda}}$ é a matriz de covariância dos parâmetros fixos, e $F$ é a matriz jacobiana 2x2 das derivadas parciais dos parâmetros ajustados em relação aos parâmetros fixos, definida na equação \eqref{eq:jacob}.
+
+\begin{equation}
+    F_{jv} = \frac{\partial N_j}{\partial \lambda_v}
+    \quad
+    \text{com} \quad j = \text{a},\text{b} \quad \text{e} \quad v = \text{a},\text{b}
+    \label{eq:jacob} 
+\end{equation}
+
+Para a segunda etapa foi determinado um $\lambda^{'}_{a}$ e um $\lambda^{''}_{b}$ conforme segue: 
+
+$$\text{i) }\lambda^{'}_{a} = \lambda_{a} + \Delta$$ 
+$$\text{ii) }\lambda^{''}_{b} = \lambda_{b} + \Delta $$
+
+Para o caso i) e o caso ii), foi realizado um novo MMQ para determinando, para o primeiro caso $\hat{N}^{'}_{a}$ e $\hat{N}^{'}_{b}$, e no segundo caso $\hat{N}^{''}_{a}$ e $\hat{N}^{''}_{b}$. Permitindo calcular a derivada numérica, conforme equação \eqref{eq:deriv}.
+
+\begin{equation}
+    \frac{\partial N_j}{\partial \lambda_v} = \frac{N^{\gamma}_j - N_j}{\Delta}, \quad \text{com} \quad \gamma = \text{'}\ quad \text{quando v = a} \quad \text{ou} \quad \gamma = \text{''} \quad \text{quando v = b}
+    \label{eq:deriv}
+\end{equation}
+
+Permitindo-nos estimar a matriz $F$ e, consequentemente, a matriz de covariância total $V_{\text{total}}$.
+
+\section{Resultados}
+
+O primeiro ajuste MMQ foi realizado conforme a equação \eqref{eq:cont}, obtendo os seguintes resultados para matriz de covariância e parâmetros ajustados, apresentandos nas equações \eqref{eq:covmmq}.
+
+
+\begin{equation}
+    V_{\text{MMQ}} = 10^3 \begin{pmatrix}
+    107&-69\\
+    -69&117
+    \end{pmatrix}
+
+    \quad \text{e} \quad
+
+    \begin{cases}
+        \hat{N}_{a} \pm \sigma^_{N_{a}} = (180 \pm 5) 10^2 \text{contagens} \\
+        \hat{N}_{b} \pm\sigma^2{N_{b}} = (252 \pm 6) 10^2 \text{contagens}\\
+        \chi^2_{\text{reduzido}}  = 0.47
+    \end{cases}
+
+    \label{eq:covmmq}
+\end{equation}
+
+Para a segunda etapa, foi determinado um $\lambda^{'}_{a}$ e um $\lambda^{''}_{b}$, usados para determinar $F$, de acordo com as equações \eqref{eq:jacob} e \eqref{eq:deriv}. Os resultados foram usados para estimar a matriz de covariância final, seguindo a Equação \eqref{eq:prop}, e apresentados na Equação \eqref{eq:covfinal}.
+
+\begin{equation}
+    V_{\text{final}} = 10^3\begin{pmatrix}
+        212&-196\\
+        -196&350
+    \end{pmatrix}
+    \label{eq:covfinal}
+\end{equation}
+
+O que nos permite determinar os parâmetros do ajuste final, conforme a Equação \eqref{eq:parfinal}.
+
+\begin{equation}
+    \begin{cases}
+        \hat{N}_{a} \pm \sigma^_{N_{a}} = (180 \pm 5) 10^2 \text{contagens} \\
+        \hat{N}_{b} \pm\sigma^2{N_{b}} = (252 \pm 6) 10^2 \text{contagens}\\
+        \chi^2_{\text{reduzido}}  = 0.47
+    \end{cases}
+    \label{eq:parfinal}
+\end{equation}
+
+Calculando a função nos pontos experimentais, obtemos a Tabela \ref{tab:final}. Bastante ajustado aos conjuntos de ponto, o que era de se esperar dado o baixo valor do $\chi^2_{\text{reduzido}}$. Ao fazermos o teste de significância de 1\% para o $\chi^2_{\text{reduzido}}$ à direita, vemos que descartariamos ajustes com $\chi^2_{\text{reduzido}}$ maior que 3.78, que não é o caso do nosso esperimento. Além disso, dada a natureza da nossa incerteza, obtida via simulação em um ambiente controlado, temos confiança o suficiente na estimativa para descartar um teste monocaudal à esquerda. 
+
+\begin{tabular}{rrrrrr}
+    \toprule
+    t(h) & dt(h) & n & \sigma & $\text{N}_{\text{ajuste}}$ & $\sigma_\text{N}_{\text{ajuste}} \\
+    \midrule
+    0.5 & 1.5 & 16183 & 133 & 16154 & 36751 \\
+    2.2 & 1.50 & 5453 & 84 & 5507 & 10534 \\
+    3.9 & 1.5 & 2646 & 65 & 2658 & 2225 \\
+    5.5 & 3. & 2900 & 76 & 2833 & 4551 \\
+    8.7 & 4. & 1688 & 76 & 1716 & 8102 \\
+    \bottomrule
+    \label{tab:final}
+\end{tabular}
+
+Esse resultado pode ser comparado com as metodologias B e C, conforme apresentado na introdução - e obtido com outros dois alunos da disciplina, cujos resultados estão apresentados na Tabela \ref{tab:cov}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+    & $V_{MMQ}$ & $V_A$ & $V_B$ & $V_C$ \\
+    \hline
+    $\sigma^2_{N_{a}}$& 104 &  212&  213&  201 \\
+    \hline
+    $\sigma^2_{N_{b}}$& 117&  349&  350&  256  \\
+    \hline
+    $cov(N_a, N_b)$& -69&  -196&  -196&  -170  \\
+    \hline
+    \end{tabular}
+    \caption{Tabela de comparação das matrizes de covariância obtidos pelos métodos A, B e C com a matriz de covariância obtida pelo método MMQ. Os dados estão apresentados em $10^3$ contagens, pois visto a quantidade de dados, não há necessidade de expressar mais do que 3 algarismos significativos.}
+    \label{tab:cov}
+    \end{table}
+
+Que notamos que os resultados obtidos pelos métodos A e B são muito próximos, enquanto o método C apresenta um desvio padrão efetivo menor.
